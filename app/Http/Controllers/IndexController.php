@@ -11,11 +11,10 @@ class IndexController extends Controller
   public function index () {
     $persons = Person::select(['name','date','id'])->get();
 
-    //dump($persons);
-
     return view('page')->with(['persons'=>$persons]);
 
   }
+
 
   public function store(Request $request) {
 
@@ -38,12 +37,18 @@ class IndexController extends Controller
     return redirect('/');
   }
 
-  public function edit($person) {
-    return redirect('/');
+  public function add() {
+    return view('add');
+  }
+
+  public function edit($name, $date) {
+    dump($name);
+    dump($date);
+    //return view('edit')->with(['person'=>$person]);
+
   }
 
   public function update($person) {
-    
 
   }
 }

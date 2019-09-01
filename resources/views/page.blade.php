@@ -10,40 +10,9 @@
     <body>
         <div>
             <h1>Page</h1>
+            <a href="{{ route('personAdd') }}">Добавить</a>
             
-            <div>
-                Добавить запись
-                <form method="POST" action="{{route('personStore')}}" name="addPerson">
-                    <label>
-                        Имя
-                        <input type="text" name="name" required>
-                    </label>
-                    <label>
-                        Дата
-                        <input type="date" name="date" required>
-                    </label>
-                    
-                    <button type="submit">+</button>
-                    {{ csrf_field() }}
-                </form>
-            </div>
             <hr>
-            <div>
-                Редактировать запись
-                <form method="POST" action="" name="updatePerson">
-                    <label>
-                        Имя
-                        <input type="text" name="nameUpdate" required>
-                    </label>
-                    <label>
-                        Дата
-                        <input type="date" name="dateUpdate" required>
-                    </label>
-                    
-                    <button type="submit">+</button>
-                    {{ csrf_field() }}
-                </form>
-            </div>
             <div>
                 <form method="POST" action="">
                     <p>Сортировка</p>
@@ -74,7 +43,7 @@
                             {{ csrf_field() }}
                         </form>
                         
-                         <form method="POST" action="{{ route('personEdit',['person' => $person->id]) }}" name="EditPerson">
+                        <form method="POST" action="{{ route('personEdit',['name' => $person->name,'date' => $person->date]) }}" name="EditPerson">
                            
                             <button type="submit">Edit</button>
                             {{ csrf_field() }}

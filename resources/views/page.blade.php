@@ -3,14 +3,16 @@
     <head>
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1">
+        <link rel="stylesheet" href="css/style.css">
 
         <title>Persons</title>
 
     </head>
     <body>
-        <div>
-            <h1>Page</h1>
+        <div class="container">
+            <h1 class="h1">Page</h1>
             <a href="{{ route('personAdd') }}">Добавить</a>
+            <button class="modal-btn">Добавить</button>
             
             <hr>
             <div>
@@ -48,6 +50,8 @@
                             <button type="submit">Edit</button>
                             {{ csrf_field() }}
                         </form>
+
+                        <button class="edit-btn" data-id="{{ $person->id }}" data-name="{{ $person->name }}" data-date="{{ $person->date }}">Редактировать</button>
                     </td>
                 </tr>
                 @endforeach
@@ -55,20 +59,24 @@
             </table>
         </div>
 
-        @if (count($errors) > 0)
-            <div>
-                <ul>
-                    @foreach($errors->all() as $error)
-                        <li>{{ $error }}</li>
-                    @endforeach
+        <div class="modal">
+            <form method="POST" action="">
+                <label>
+                    Имя
+                    <input class="name" type="text" name="name" required>
+                </label>
+                <label>
+                    Дата
+                    <input class="date" type="date" name="date" required>
+                </label>
+                
+                <button class="submit" type="submit">+</button>
+                <button class="close">x</button>
+                {{ csrf_field() }}
+            </form>
+            
+        </div>
 
-                </ul>
-            </div>
-        @else
-            <div>
-                <p>Информация добавлена</p>
-            </div>
-        @endif
-      
+     <script src="js/main.js"></script> 
     </body>
 </html>

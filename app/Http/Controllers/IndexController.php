@@ -57,6 +57,5 @@ class IndexController extends Controller
     $person_tmp->$date;
     $person_tmp->save();
     return redirect('/');
-
   }
 }

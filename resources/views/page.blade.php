@@ -43,7 +43,7 @@
                             {{ csrf_field() }}
                         </form>
                         
-                        <form method="POST" action="{{ route('personEdit',['name' => $person->name,'date' => $person->date]) }}" name="EditPerson">
+                        <form method="POST" action="{{ route('personEdit',['name' => $person->name,'date' => $person->date, 'id' => $person->id]) }}" name="EditPerson">
                            
                             <button type="submit">Edit</button>
                             {{ csrf_field() }}

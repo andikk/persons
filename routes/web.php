@@ -16,5 +16,5 @@ Route::get('/', 'IndexController@index');
 Route::get('page/add', 'IndexController@add')->name('personAdd');
 Route::post('page/add', 'IndexController@store')->name('personStore');
 Route::delete('/delete/{person}', 'IndexController@delete')->name('personDelete');
-Route::post('/edit/{person}', 'IndexController@edit')->name('personEdit');
-Route::post('page/edit/{person}', 'IndexController@update')->name('personUpdate');
+Route::post('/edit', 'IndexController@edit')->name('personEdit');
+Route::post('/update', 'IndexController@update')->name('personUpdate');

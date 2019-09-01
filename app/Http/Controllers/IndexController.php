@@ -41,14 +41,22 @@ class IndexController extends Controller
     return view('add');
   }
 
-  public function edit($name, $date) {
-    dump($name);
-    dump($date);
-    //return view('edit')->with(['person'=>$person]);
-
+  public function edit(Request $request) {
+    $id = $request->input('id');
+    $name = $request->input('name');
+    $date = $request->input('date');
+    return view('edit')->with(['name'=>$name,'date'=>$date,'id'=>$id]);
   }
 
-  public function update($person) {
+  public function update(Request $request) {
+    $id = $request->input('id');
+    $name = $request->input('name');
+    $date = $request->input('date');
+    $person_tmp = \App\Person::where('id', $id)->first();
+    $person_tmp->name = $name;
+    $person_tmp->$date;
+    $person_tmp->save();
+    return redirect('/');
 
   }
 }

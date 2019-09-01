@@ -9,17 +9,17 @@
     </head>
     <body>
             <div>
-                <p>{{ $person }}</p>
+
 
                 <h2>Редактировать запись</h2>
-                <form method="POST" action="">
+                <form method="POST" action="{{route('personUpdate',['id' => $id])}}">
                     <label>
                         Имя
-                        <input type="text" name="name" value="" required>
+                        <input type="text" name="name" value="{{ $name }}" required>
                     </label>
                     <label>
                         Дата
-                        <input type="date" name="date" value="" required>
+                        <input type="date" name="date" value="{{ $date }}" required>
                     </label>
                     
                     <button type="submit">+</button>

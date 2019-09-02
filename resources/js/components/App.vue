@@ -1,7 +1,7 @@
 <template>
   <div>
     <h1>Список сотрудников</h1>
-    <button @click="add">Добавить</button>
+    <button @click="toggleModalAdd">Добавить</button>
     
     <table>
       <tr>
@@ -15,14 +15,26 @@
         <td>{{ person.date }}</td>
 
         <td>
-          <button @click="edit(person.id)">Править</button>
+          <button @click="edit(person.id, person.name, person.date)">Править</button>
           <button @click="del(person.id)">Удалить</button> 
         </td>
       </tr>
 
     </table>
 
-    <app-modal-add :showModalAdd="showModalAdd" @added="upadateListAdd"></app-modal-add>
+    <app-modal-add v-bind:class="{active: showModalAdd}" 
+      @added="added" 
+      @closed="toggleModalAdd">
+    </app-modal-add>
+
+    <app-modal-edit
+      :showModalEdit = "showModalEdit" 
+      :persIdEdit="persIdEdit"
+      :persNameEdit="persNameEdit"
+      :persDateEdit="persDateEdit"
+      @edited="edited" 
+      @closed="toggleModalEdit">
+    </app-modal-edit>
 
 
   </div>
@@ -38,6 +50,9 @@
     data() {
       return {
         persons: [],
+        persIdEdit: '',
+        persNameEdit: '',
+        persDateEdit: '',
         loading: true,
         errored: false,
         showModalAdd: false,
@@ -59,20 +74,31 @@
         .finally(() => (this.loading = false));
       },
       
-      add() {
-        //this.showModalAdd=!this.showModalAdd;
-
-        this.showModalAdd = true;
-        console.log(this.showModalAdd);
+      toggleModalAdd() {
+        this.showModalAdd=!this.showModalAdd;
       },
 
-      edit() {
+      toggleModalEdit() {
         this.showModalEdit=!this.showModalEdit;
       },
 
-      upadateListAdd() {
+      added() {
         this.loadList();
-        //this.showModalAdd = false;
+        this.toggleModalAdd();
+        console.log('Добавлено');
+      },
+
+      edited() {
+        this.loadList();
+        this.toggleModalEdit();
+        console.log('Изменено');
+      },
+
+      edit(persId, persName, persDate) {
+        this.persIdEdit = persId;
+        this.persNameEdit = persName;
+        this.persDateEdit = persDate;
+        this.toggleModalEdit();
       },
 
       del(persId) {

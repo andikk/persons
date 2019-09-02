@@ -1732,6 +1732,18 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 
 
 
@@ -1739,6 +1751,9 @@ __webpack_require__.r(__webpack_exports__);
   data: function data() {
     return {
       persons: [],
+      persIdEdit: '',
+      persNameEdit: '',
+      persDateEdit: '',
       loading: true,
       errored: false,
       showModalAdd: false,
@@ -1759,16 +1774,27 @@ __webpack_require__.r(__webpack_exports__);
         return _this.loading = false;
       });
     },
-    add: function add() {
-      //this.showModalAdd=!this.showModalAdd;
-      this.showModalAdd = true;
-      console.log(this.showModalAdd);
+    toggleModalAdd: function toggleModalAdd() {
+      this.showModalAdd = !this.showModalAdd;
     },
-    edit: function edit() {
+    toggleModalEdit: function toggleModalEdit() {
       this.showModalEdit = !this.showModalEdit;
     },
-    upadateListAdd: function upadateListAdd() {
-      this.loadList(); //this.showModalAdd = false;
+    added: function added() {
+      this.loadList();
+      this.toggleModalAdd();
+      console.log('Добавлено');
+    },
+    edited: function edited() {
+      this.loadList();
+      this.toggleModalEdit();
+      console.log('Изменено');
+    },
+    edit: function edit(persId, persName, persDate) {
+      this.persIdEdit = persId;
+      this.persNameEdit = persName;
+      this.persDateEdit = persDate;
+      this.toggleModalEdit();
     },
     del: function del(persId) {
       var _this2 = this;
@@ -1834,13 +1860,14 @@ __webpack_require__.r(__webpack_exports__);
   data: function data() {
     return {
       persName: '',
-      persDate: ''
+      persDate: '',
+      errored: false,
+      loading: true
     };
   },
   methods: {
     close: function close() {
-      //console.log(this.showModalAdd);
-      this.showModalAdd = false;
+      this.$emit('closed');
     },
     store: function store() {
       var _this = this;
@@ -1849,20 +1876,15 @@ __webpack_require__.r(__webpack_exports__);
         name: this.persName,
         date: this.persDate
       }).then(function (response) {
-        _this.showModal = false;
-
         _this.$emit('added');
-
-        console.log('Добавлено');
       })["catch"](function (error) {
-        console.log(error);
+        console.log(error.response.data.errors);
         _this.errored = true;
       })["finally"](function () {
         return _this.loading = false;
       });
     }
-  },
-  props: ['showModalAdd']
+  }
 });
 
 /***/ }),
@@ -1871,14 +1893,74 @@ __webpack_require__.r(__webpack_exports__);
 /*!********************************************************************************************************************************************************************!*\
   !*** ./node_modules/babel-loader/lib??ref--4-0!./node_modules/vue-loader/lib??vue-loader-options!./resources/js/components/ModalEdit.vue?vue&type=script&lang=js& ***!
   \********************************************************************************************************************************************************************/
-/*! no static exports found */
-/***/ (function(module, exports) {
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
 
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var axios__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! axios */ "./node_modules/axios/index.js");
+/* harmony import */ var axios__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(axios__WEBPACK_IMPORTED_MODULE_0__);
 //
 //
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+
+/* harmony default export */ __webpack_exports__["default"] = ({
+  data: function data() {
+    return {
+      newPersName: '',
+      newPersDate: '',
+      errored: false,
+      loading: true
+    };
+  },
+  watch: {
+    showModalEdit: function showModalEdit() {
+      this.newPersName = this.persNameEdit;
+      this.newPersDate = this.persDateEdit;
+    }
+  },
+  methods: {
+    close: function close() {
+      this.$emit('closed');
+    },
+    edit: function edit() {
+      var _this = this;
+
+      axios__WEBPACK_IMPORTED_MODULE_0___default.a.post('/update', {
+        id: this.persIdEdit,
+        name: this.newPersName,
+        date: this.newPersDate
+      }).then(function (response) {
+        _this.$emit('edited');
+      })["catch"](function (error) {
+        console.log(error);
+        _this.errored = true;
+      })["finally"](function () {
+        return _this.loading = false;
+      });
+    }
+  },
+  props: ['showModalEdit', 'persIdEdit', 'persNameEdit', 'persDateEdit']
+});
 
 /***/ }),
 
@@ -2392,7 +2474,7 @@ var render = function() {
     [
       _c("h1", [_vm._v("Список сотрудников")]),
       _vm._v(" "),
-      _c("button", { on: { click: _vm.add } }, [_vm._v("Добавить")]),
+      _c("button", { on: { click: _vm.toggleModalAdd } }, [_vm._v("Добавить")]),
       _vm._v(" "),
       _c(
         "table",
@@ -2427,7 +2509,7 @@ var render = function() {
                   {
                     on: {
                       click: function($event) {
-                        return _vm.edit(person.id)
+                        return _vm.edit(person.id, person.name, person.date)
                       }
                     }
                   },
@@ -2453,8 +2535,18 @@ var render = function() {
       ),
       _vm._v(" "),
       _c("app-modal-add", {
-        attrs: { showModalAdd: _vm.showModalAdd },
-        on: { added: _vm.upadateListAdd }
+        class: { active: _vm.showModalAdd },
+        on: { added: _vm.added, closed: _vm.toggleModalAdd }
+      }),
+      _vm._v(" "),
+      _c("app-modal-edit", {
+        attrs: {
+          showModalEdit: _vm.showModalEdit,
+          persIdEdit: _vm.persIdEdit,
+          persNameEdit: _vm.persNameEdit,
+          persDateEdit: _vm.persDateEdit
+        },
+        on: { edited: _vm.edited, closed: _vm.toggleModalEdit }
       })
     ],
     1
@@ -2495,84 +2587,80 @@ var render = function() {
   var _vm = this
   var _h = _vm.$createElement
   var _c = _vm._self._c || _h
-  return _c(
-    "div",
-    { staticClass: "modal", class: { active: _vm.showModalAdd } },
-    [
-      _c("h2", [_vm._v("Добавить сотрудника")]),
-      _vm._v(" "),
-      _c(
-        "form",
-        {
-          on: {
-            submit: function($event) {
-              $event.preventDefault()
-              return _vm.store($event)
-            }
+  return _c("div", { staticClass: "modal" }, [
+    _c("h2", [_vm._v("Добавить сотрудника")]),
+    _vm._v(" "),
+    _c(
+      "form",
+      {
+        on: {
+          submit: function($event) {
+            $event.preventDefault()
+            return _vm.store($event)
           }
-        },
-        [
-          _c("label", [
-            _vm._v("\n        Имя\n        "),
-            _c("input", {
-              directives: [
-                {
-                  name: "model",
-                  rawName: "v-model",
-                  value: _vm.persName,
-                  expression: "persName"
-                }
-              ],
-              staticClass: "name",
-              attrs: { type: "text", name: "name", required: "" },
-              domProps: { value: _vm.persName },
-              on: {
-                input: function($event) {
-                  if ($event.target.composing) {
-                    return
-                  }
-                  _vm.persName = $event.target.value
-                }
+        }
+      },
+      [
+        _c("label", [
+          _vm._v("\n        Имя\n        "),
+          _c("input", {
+            directives: [
+              {
+                name: "model",
+                rawName: "v-model",
+                value: _vm.persName,
+                expression: "persName"
               }
-            })
-          ]),
-          _vm._v(" "),
-          _c("label", [
-            _vm._v("\n        Дата\n        "),
-            _c("input", {
-              directives: [
-                {
-                  name: "model",
-                  rawName: "v-model",
-                  value: _vm.persDate,
-                  expression: "persDate"
+            ],
+            staticClass: "name",
+            attrs: { type: "text", name: "name", required: "" },
+            domProps: { value: _vm.persName },
+            on: {
+              input: function($event) {
+                if ($event.target.composing) {
+                  return
                 }
-              ],
-              staticClass: "date",
-              attrs: { type: "date", name: "date", required: "" },
-              domProps: { value: _vm.persDate },
-              on: {
-                input: function($event) {
-                  if ($event.target.composing) {
-                    return
-                  }
-                  _vm.persDate = $event.target.value
-                }
+                _vm.persName = $event.target.value
               }
-            })
-          ]),
-          _vm._v(" "),
-          _c("button", { staticClass: "submit", attrs: { type: "submit" } }, [
-            _vm._v("+")
-          ])
-        ]
-      ),
-      _vm._v(" "),
-      _c("button", { staticClass: "close", on: { click: _vm.close } }, [
-        _vm._v("x")
-      ])
-    ]
-  )
+            }
+          })
+        ]),
+        _vm._v(" "),
+        _c("label", [
+          _vm._v("\n        Дата\n        "),
+          _c("input", {
+            directives: [
+              {
+                name: "model",
+                rawName: "v-model",
+                value: _vm.persDate,
+                expression: "persDate"
+              }
+            ],
+            staticClass: "date",
+            attrs: { type: "date", name: "date" },
+            domProps: { value: _vm.persDate },
+            on: {
+              input: function($event) {
+                if ($event.target.composing) {
+                  return
+                }
+                _vm.persDate = $event.target.value
+              }
+            }
+          })
+        ]),
+        _vm._v(" "),
+        _c("button", { staticClass: "submit", attrs: { type: "submit" } }, [
+          _vm._v("+")
+        ])
+      ]
+    ),
+    _vm._v(" "),
+    _c("button", { staticClass: "close", on: { click: _vm.close } }, [
+      _vm._v("x")
+    ])
+  ])
 }
 var staticRenderFns = []
 render._withStripped = true
@@ -2596,7 +2684,84 @@ var render = function() {
   var _vm = this
   var _h = _vm.$createElement
   var _c = _vm._self._c || _h
-  return _c("div")
+  return _c(
+    "div",
+    { staticClass: "modal", class: { active: this.showModalEdit } },
+    [
+      _c("h2", [_vm._v("Добавить сотрудника")]),
+      _vm._v(" "),
+      _c(
+        "form",
+        {
+          on: {
+            submit: function($event) {
+              $event.preventDefault()
+              return _vm.edit($event)
+            }
+          }
+        },
+        [
+          _c("label", [
+            _vm._v("\n        Имя\n        "),
+            _c("input", {
+              directives: [
+                {
+                  name: "model",
+                  rawName: "v-model",
+                  value: _vm.newPersName,
+                  expression: "newPersName"
+                }
+              ],
+              staticClass: "name",
+              attrs: { type: "text", name: "name", required: "" },
+              domProps: { value: _vm.newPersName },
+              on: {
+                input: function($event) {
+                  if ($event.target.composing) {
+                    return
+                  }
+                  _vm.newPersName = $event.target.value
+                }
+              }
+            })
+          ]),
+          _vm._v(" "),
+          _c("label", [
+            _vm._v("\n        Дата\n        "),
+            _c("input", {
+              directives: [
+                {
+                  name: "model",
+                  rawName: "v-model",
+                  value: _vm.newPersDate,
+                  expression: "newPersDate"
+                }
+              ],
+              staticClass: "date",
+              attrs: { type: "date", name: "date", required: "" },
+              domProps: { value: _vm.newPersDate },
+              on: {
+                input: function($event) {
+                  if ($event.target.composing) {
+                    return
+                  }
+                  _vm.newPersDate = $event.target.value
+                }
+              }
+            })
+          ]),
+          _vm._v(" "),
+          _c("button", { staticClass: "submit", attrs: { type: "submit" } }, [
+            _vm._v("+")
+          ])
+        ]
+      ),
+      _vm._v(" "),
+      _c("button", { staticClass: "close", on: { click: _vm.close } }, [
+        _vm._v("x")
+      ])
+    ]
+  )
 }
 var staticRenderFns = []
 render._withStripped = true
@@ -14756,15 +14921,14 @@ var app = new Vue({
 /*!*****************************************!*\
   !*** ./resources/js/components/App.vue ***!
   \*****************************************/
-/*! no static exports found */
+/*! exports provided: default */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _App_vue_vue_type_template_id_332fccf4___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./App.vue?vue&type=template&id=332fccf4& */ "./resources/js/components/App.vue?vue&type=template&id=332fccf4&");
 /* harmony import */ var _App_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./App.vue?vue&type=script&lang=js& */ "./resources/js/components/App.vue?vue&type=script&lang=js&");
-/* harmony reexport (unknown) */ for(var __WEBPACK_IMPORT_KEY__ in _App_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_1__) if(__WEBPACK_IMPORT_KEY__ !== 'default') (function(key) { __webpack_require__.d(__webpack_exports__, key, function() { return _App_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_1__[key]; }) }(__WEBPACK_IMPORT_KEY__));
-/* harmony import */ var _node_modules_vue_loader_lib_runtime_componentNormalizer_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../../../node_modules/vue-loader/lib/runtime/componentNormalizer.js */ "./node_modules/vue-loader/lib/runtime/componentNormalizer.js");
+/* empty/unused harmony star reexport *//* harmony import */ var _node_modules_vue_loader_lib_runtime_componentNormalizer_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../../../node_modules/vue-loader/lib/runtime/componentNormalizer.js */ "./node_modules/vue-loader/lib/runtime/componentNormalizer.js");
 
 
 
@@ -14794,7 +14958,7 @@ component.options.__file = "resources/js/components/App.vue"
 /*!******************************************************************!*\
   !*** ./resources/js/components/App.vue?vue&type=script&lang=js& ***!
   \******************************************************************/
-/*! no static exports found */
+/*! exports provided: default */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -14939,9 +15103,7 @@ component.options.__file = "resources/js/components/ModalEdit.vue"
 "use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _node_modules_babel_loader_lib_index_js_ref_4_0_node_modules_vue_loader_lib_index_js_vue_loader_options_ModalEdit_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../../node_modules/babel-loader/lib??ref--4-0!../../../node_modules/vue-loader/lib??vue-loader-options!./ModalEdit.vue?vue&type=script&lang=js& */ "./node_modules/babel-loader/lib/index.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/ModalEdit.vue?vue&type=script&lang=js&");
-/* harmony import */ var _node_modules_babel_loader_lib_index_js_ref_4_0_node_modules_vue_loader_lib_index_js_vue_loader_options_ModalEdit_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_node_modules_babel_loader_lib_index_js_ref_4_0_node_modules_vue_loader_lib_index_js_vue_loader_options_ModalEdit_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_0__);
-/* harmony reexport (unknown) */ for(var __WEBPACK_IMPORT_KEY__ in _node_modules_babel_loader_lib_index_js_ref_4_0_node_modules_vue_loader_lib_index_js_vue_loader_options_ModalEdit_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_0__) if(__WEBPACK_IMPORT_KEY__ !== 'default') (function(key) { __webpack_require__.d(__webpack_exports__, key, function() { return _node_modules_babel_loader_lib_index_js_ref_4_0_node_modules_vue_loader_lib_index_js_vue_loader_options_ModalEdit_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_0__[key]; }) }(__WEBPACK_IMPORT_KEY__));
- /* harmony default export */ __webpack_exports__["default"] = (_node_modules_babel_loader_lib_index_js_ref_4_0_node_modules_vue_loader_lib_index_js_vue_loader_options_ModalEdit_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_0___default.a); 
+/* empty/unused harmony star reexport */ /* harmony default export */ __webpack_exports__["default"] = (_node_modules_babel_loader_lib_index_js_ref_4_0_node_modules_vue_loader_lib_index_js_vue_loader_options_ModalEdit_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_0__["default"]); 
 
 /***/ }),
 

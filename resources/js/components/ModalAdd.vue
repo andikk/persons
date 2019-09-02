@@ -1,5 +1,5 @@
 <template>
-  <div v-bind:class="{active: showModalAdd}" class="modal">
+  <div class="modal">
     <h2>Добавить сотрудника</h2>
     <form v-on:submit.prevent="store">
       <label>
@@ -8,7 +8,7 @@
       </label>
       <label>
           Дата
-          <input class="date" type="date" name="date" v-model="persDate" required>
+          <input class="date" type="date" name="date" v-model="persDate">
       </label>
       
       <button class="submit" type="submit">+</button>
@@ -26,29 +26,26 @@
       return {
         persName: '',
         persDate: '',
-        
+        errored: false,
+        loading: true
       };
     },
     methods: {
       close() {
-        //console.log(this.showModalAdd);
-        this.showModalAdd = false;
+        this.$emit('closed');
       },
       store() {
         axios
           .post('/page/store/',{name: this.persName, date: this.persDate })
           .then(response => {
-            this.showModal = false;
-            this.$emit('added');
-            console.log('Добавлено'); 
+            this.$emit('added');           
           })
           .catch(error => {
-            console.log(error);
+            console.log(error.response.data.errors);
             this.errored = true;
           })
           .finally(() => (this.loading = false));      
       }
-    },
-    props: ['showModalAdd']
+    }
   }  
 </script>

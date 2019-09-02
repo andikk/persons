@@ -11,10 +11,10 @@
 |
 */
 
-
-Route::get('/', 'IndexController@index');
+Route::get('/', 'IndexController@start');
+Route::get('/page', 'IndexController@index');
 Route::get('page/add', 'IndexController@add')->name('personAdd');
 Route::post('page/store', 'IndexController@store')->name('personStore');
-Route::delete('/delete/{person}', 'IndexController@delete')->name('personDelete');
+Route::post('/delete/{person}', 'IndexController@delete')->name('personDelete');
 Route::post('/edit', 'IndexController@edit')->name('personEdit');
 Route::post('/update', 'IndexController@update')->name('personUpdate');

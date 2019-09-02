@@ -1,0 +1,17 @@
+  .modal {
+    display: none;
+    width: 300px;
+    margin-left: auto;
+    margin-right: auto;
+    padding: 30px;
+    border: 1px solid grey;
+  }
+
+  .name, .date {
+    display: block;
+    margin-bottom: 10px;
+  }
+
+  .modal.active {
+    display: block;
+  }

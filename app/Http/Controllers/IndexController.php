@@ -8,11 +8,17 @@ use App\Person;
 
 class IndexController extends Controller
 {
+  public function start () {
+    return view('index');
+  }
+
   public function index () {
     $persons = Person::select(['name','date','id'])->get();
-
-    return view('page')->with(['persons'=>$persons]);
-
+    
+    return response()->json([
+      'persons' => $persons->toArray()
+    ]);    
+    //return view('page')->with(['persons'=>$persons]);
   }
 
 
@@ -28,7 +34,6 @@ class IndexController extends Controller
     $person->fill($data);
     $person->save();
     return redirect('/');
-
   }
 
   public function delete($person) {

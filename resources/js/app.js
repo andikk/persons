@@ -7,6 +7,9 @@
 //require('./bootstrap');
 
 window.Vue = require('vue');
+import VueFilterDateFormat from 'vue-filter-date-format';
+
+window.Vue.use(VueFilterDateFormat);
 
 import App from "./components/App";
 

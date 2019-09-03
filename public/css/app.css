@@ -525,8 +525,8 @@ button {
   background-color: #42b983;
   padding-left: 8px;
   padding-right: 8px;
-  padding-top: 4px;
-  padding-bottom: 4px;
+  padding-top: 8px;
+  padding-bottom: 8px;
   color: #fff;
   font-family: "Open Sans", "Arial", sans-serif;
   text-align: center;
@@ -551,6 +551,8 @@ button {
 .btn--edit,
 .btn--del {
   text-transform: lowercase;
+  padding-top: 4px;
+  padding-bottom: 4px;
 }
 
 .btn--del {

@@ -23,7 +23,7 @@
       <div class="page__loading" v-if="loading">Загружаю список...</div>
       <tr v-for="(person, index) in sortedList">
         <td>{{ person.name }}</td>
-        <td>{{ person.date | dateFormat('DD.MM.YYYY')}}</td>
+        <td>{{ new Date(person.date) | dateFormat('DD.MM.YYYY')}}</td>
 
         <td>
           <button class="btn btn--edit" @click="edit(person.id, person.name, person.date)">Править</button>

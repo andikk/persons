@@ -2,8 +2,8 @@
   background-color: $primary-color;
   padding-left: 8px;
   padding-right: 8px;
-  padding-top: 4px;
-  padding-bottom: 4px;
+  padding-top: 8px;
+  padding-bottom: 8px;
   color: #fff;
   font-family: $font-open;
   text-align: center;
@@ -11,6 +11,7 @@
   border-radius: 3px;
   transition: all 0.5s;
   text-transform: uppercase;
+
 
   &:hover {
     background-color: $primary-hover-color;
@@ -26,6 +27,8 @@
 
   &--edit, &--del {
     text-transform: lowercase;
+    padding-top: 4px;
+    padding-bottom: 4px;
   }
 
   &--del {

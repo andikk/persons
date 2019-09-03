@@ -15,7 +15,7 @@
         <input class="modal__date" type="date" name="date" v-model="newPersDate" required>  
       </div>
       
-      <button class="btn" type="submit">+</button>   
+      <button class="btn" type="submit">Сохранить</button>   
     </form>
 
     <div class="modal__error" v-if="errored">

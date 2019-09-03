@@ -52,7 +52,6 @@
       @closed="toggleModalEdit">
     </app-modal-edit>
 
-
   </div>
  
 </template>
@@ -163,7 +162,7 @@
     components: {
       appModalEdit: ModalEdit,
       appModalAdd: ModalAdd
-    },
+    }
   }
   
 </script>

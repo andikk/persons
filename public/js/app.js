@@ -1759,7 +1759,6 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
-//
 
 
 
@@ -3060,7 +3059,7 @@ var render = function() {
           ]),
           _vm._v(" "),
           _c("button", { staticClass: "btn", attrs: { type: "submit" } }, [
-            _vm._v("+")
+            _vm._v("Сохранить")
           ])
         ]
       ),

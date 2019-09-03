@@ -1,21 +1,28 @@
 <template>
-  <div class="modal">
+  <div class="modal" v-bind:class="{active: showModalAdd}">
+    <button class="modal__close" @click="close">&times;</button>
     <h2>Добавить сотрудника</h2>
+    
     <form v-on:submit.prevent="store">
-      <label>
-          Имя
-          <input class="name" type="text" name="name" v-model="persName" required>
-      </label>
-      <label>
-          Дата
-          <input class="date" type="date" name="date" v-model="persDate">
-      </label>
+      <div class="modal__element">
+        <label class="modal__label" for="name">Имя</label>
+        <input class="modal__name" type="text" name="name" v-model="persName" required>  
+      </div>
       
-      <button class="submit" type="submit">+</button>
-      
+      <div class="modal__element">
+        <label class="modal__label" for="date">Дата</label>    
+        <input class="modal__date" type="date" name="date" v-model="persDate" required>  
+      </div>
+            
+      <button class="btn" type="submit">Добавить</button>     
     </form>
 
-    <button class="close" @click="close">x</button>
+    <div class="modal__error" v-if="errored">
+      <ul>
+        <li v-for="(error, index) in errors">{{ error }}</li>
+      </ul> 
+    </div>
+    
   </div>  
 </template>
 
@@ -27,7 +34,7 @@
         persName: '',
         persDate: '',
         errored: false,
-        loading: true
+        errors: []     
       };
     },
     methods: {
@@ -36,16 +43,18 @@
       },
       store() {
         axios
-          .post('/page/store/',{name: this.persName, date: this.persDate })
+          .post('/store/',{name: this.persName, date: this.persDate })
           .then(response => {
+            this.persName = '';
+            this.persDate = '';
             this.$emit('added');           
           })
           .catch(error => {
-            console.log(error.response.data.errors);
+            this.errors = error.response.data.errors; 
             this.errored = true;
-          })
-          .finally(() => (this.loading = false));      
+          });             
       }
-    }
+    },
+    props: ['showModalAdd']
   }  
 </script>

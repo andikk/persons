@@ -1,0 +1,44 @@
+html {
+  box-sizing: border-box;
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: inherit;
+}
+
+body {
+  margin: 0;
+  padding: 0;
+  font-family: $font-open;
+  font-size: 14px;
+  font-weight: 400;
+  color: #000;
+}
+
+a {
+  text-decoration: underline;
+  cursor: pointer;
+  outline-style: none;
+  color: $primary-color;
+  transition: all 0.5s;
+
+  &:hover {
+    text-decoration: none;
+  }
+
+  &:active {
+    color: $primary-active-color;
+  }
+
+  &:focus {
+    color: $primary-focus-color;
+  }
+}
+
+button {
+  cursor: pointer;
+  outline-style: none; 
+  user-select: none; 
+}

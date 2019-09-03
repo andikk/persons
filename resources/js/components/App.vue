@@ -1,28 +1,44 @@
 <template>
-  <div>
+  <div class="page" v-bind:class="{page__overlay: showModalAdd||showModalEdit}">
     <h1>Список сотрудников</h1>
-    <button @click="toggleModalAdd">Добавить</button>
+    <button class="btn" @click="toggleModalAdd">Добавить</button>
     
-    <table>
+    <div class="page__sort">
+      <p>Сортировка 
+        <select v-model="sortParam">
+          <option selected value="name">Имя</option>
+          <option value="date">Дата</option>
+        </select> 
+      </p>
+       
+    </div>
+    
+    
+    <table class="table">
       <tr>
-        <td>Имя</td>
-        <td>Дата</td>
+        <td><a @click="sortParam='name'">Имя</a></td>
+        <td><a @click="sortParam='date'">Дата</a></td>
         <td>Действие</td>
       </tr>
-      <div class="loading" v-show="loading">Загружаю список...</div>
-      <tr v-for="(person, index) in persons">
+      <div class="page__loading" v-if="loading">Загружаю список...</div>
+      <tr v-for="(person, index) in sortedList">
         <td>{{ person.name }}</td>
-        <td>{{ person.date }}</td>
+        <td>{{ person.date | dateFormat('DD.MM.YYYY')}}</td>
 
         <td>
-          <button @click="edit(person.id, person.name, person.date)">Править</button>
-          <button @click="del(person.id)">Удалить</button> 
+          <button class="btn btn--edit" @click="edit(person.id, person.name, person.date)">Править</button>
+          <button class="btn btn--del" @click="del(person.id)">Удалить</button> 
         </td>
       </tr>
 
     </table>
 
-    <app-modal-add v-bind:class="{active: showModalAdd}" 
+    <div v-show="showInfo" class="page__info">
+      <p class="page__message">{{ message }}</p>
+    </div>
+
+    <app-modal-add  
+      :showModalAdd = "showModalAdd"
       @added="added" 
       @closed="toggleModalAdd">
     </app-modal-add>
@@ -42,6 +58,7 @@
 </template>
 
 <script>
+
   import axios from 'axios';
   import ModalEdit from './ModalEdit.vue';
   import ModalAdd from './ModalAdd.vue';
@@ -57,21 +74,30 @@
         errored: false,
         showModalAdd: false,
         showModalEdit: false,
+        sortParam: 'name',
+        showInfo: false,
+        message: ''
       };
     },
     methods: {
       loadList() {
         axios
-        .get('http://localhost:8000/page/')
+        .get('/list/')
         .then(response => {
           this.persons = response.data.persons; 
-          console.log(this.persons);
         })
         .catch(error => {
+          this.showMessage("Ошибка при загрузки перечня сотрудников");
           console.log(error);
           this.errored = true;
         })
         .finally(() => (this.loading = false));
+      },
+
+      showMessage(message) {
+        this.message = message;
+        this.showInfo = true;
+        setTimeout(() => this.showInfo = false, 3000);
       },
       
       toggleModalAdd() {
@@ -85,13 +111,13 @@
       added() {
         this.loadList();
         this.toggleModalAdd();
-        console.log('Добавлено');
+        this.showMessage('Добавлено');
       },
 
       edited() {
         this.loadList();
         this.toggleModalEdit();
-        console.log('Изменено');
+        this.showMessage('Изменения внесены');
       },
 
       edit(persId, persName, persDate) {
@@ -102,23 +128,36 @@
       },
 
       del(persId) {
-         const url = 'http://localhost:8000/delete/' + persId;
+         const url = '/delete/' + persId;
          axios
           .post(url)
           .then(response => {
             this.loadList(); 
-            console.log('удалено');
+            this.showMessage('Запись уадалена');
           })
           .catch(error => {
+            this.showMessage("Ошибка при удалении записи");
             console.log(error);
             this.errored = true;
-          })
-          .finally(() => (this.loading = false));
+          });      
       },     
     },
 
     mounted() {
       this.loadList(); 
+    },
+
+    computed: {
+      sortedList() {
+        const sortByName = (d1, d2) => ((d1.name.toLowerCase() > d2.name.toLowerCase()) ? 1 : -1);
+        const sortByDate = (d1, d2) => ((d1.date > d2.date) ? 1 : -1);
+        
+        switch (this.sortParam) {
+          case 'name': return this.persons.sort(sortByName);
+          case 'date': return this.persons.sort(sortByDate);
+          default: return this.persons;
+        }
+      },
     },
 
     components: {

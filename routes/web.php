@@ -12,9 +12,7 @@
 */
 
 Route::get('/', 'IndexController@start');
-Route::get('/page', 'IndexController@index');
-Route::get('page/add', 'IndexController@add')->name('personAdd');
-Route::post('page/store', 'IndexController@store')->name('personStore');
-Route::post('/delete/{person}', 'IndexController@delete')->name('personDelete');
-Route::post('/edit', 'IndexController@edit')->name('personEdit');
-Route::post('/update', 'IndexController@update')->name('personUpdate');
+Route::get('/list', 'IndexController@list');
+Route::post('/store', 'IndexController@store');
+Route::post('/delete/{person}', 'IndexController@delete');
+Route::post('/update', 'IndexController@update');

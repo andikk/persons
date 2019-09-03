@@ -1,17 +1,8 @@
-  .modal {
-    display: none;
-    width: 300px;
-    margin-left: auto;
-    margin-right: auto;
-    padding: 30px;
-    border: 1px solid grey;
-  }
-
-  .name, .date {
-    display: block;
-    margin-bottom: 10px;
-  }
-
-  .modal.active {
-    display: block;
-  }
+@import "blocks/system/var.scss";
+@import "blocks/system/font.scss";
+@import "blocks/system/normalize.scss";
+@import "blocks/system/global.scss";
+@import "blocks/page.scss";
+@import "blocks/modal.scss";
+@import "blocks/btn.scss";
+@import "blocks/table.scss";

@@ -1744,6 +1744,22 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 
 
 
@@ -1757,22 +1773,35 @@ __webpack_require__.r(__webpack_exports__);
       loading: true,
       errored: false,
       showModalAdd: false,
-      showModalEdit: false
+      showModalEdit: false,
+      sortParam: 'name',
+      showInfo: false,
+      message: ''
     };
   },
   methods: {
     loadList: function loadList() {
       var _this = this;
 
-      axios__WEBPACK_IMPORTED_MODULE_0___default.a.get('http://localhost:8000/page/').then(function (response) {
+      axios__WEBPACK_IMPORTED_MODULE_0___default.a.get('/list/').then(function (response) {
         _this.persons = response.data.persons;
-        console.log(_this.persons);
       })["catch"](function (error) {
+        _this.showMessage("Ошибка при загрузки перечня сотрудников");
+
         console.log(error);
         _this.errored = true;
       })["finally"](function () {
         return _this.loading = false;
       });
+    },
+    showMessage: function showMessage(message) {
+      var _this2 = this;
+
+      this.message = message;
+      this.showInfo = true;
+      setTimeout(function () {
+        return _this2.showInfo = false;
+      }, 3000);
     },
     toggleModalAdd: function toggleModalAdd() {
       this.showModalAdd = !this.showModalAdd;
@@ -1783,12 +1812,12 @@ __webpack_require__.r(__webpack_exports__);
     added: function added() {
       this.loadList();
       this.toggleModalAdd();
-      console.log('Добавлено');
+      this.showMessage('Добавлено');
     },
     edited: function edited() {
       this.loadList();
       this.toggleModalEdit();
-      console.log('Изменено');
+      this.showMessage('Изменения внесены');
     },
     edit: function edit(persId, persName, persDate) {
       this.persIdEdit = persId;
@@ -1797,23 +1826,45 @@ __webpack_require__.r(__webpack_exports__);
       this.toggleModalEdit();
     },
     del: function del(persId) {
-      var _this2 = this;
+      var _this3 = this;
 
-      var url = 'http://localhost:8000/delete/' + persId;
+      var url = '/delete/' + persId;
       axios__WEBPACK_IMPORTED_MODULE_0___default.a.post(url).then(function (response) {
-        _this2.loadList();
+        _this3.loadList();
 
-        console.log('удалено');
+        _this3.showMessage('Запись уадалена');
       })["catch"](function (error) {
+        _this3.showMessage("Ошибка при удалении записи");
+
         console.log(error);
-        _this2.errored = true;
-      })["finally"](function () {
-        return _this2.loading = false;
+        _this3.errored = true;
       });
     }
   },
   mounted: function mounted() {
     this.loadList();
+  },
+  computed: {
+    sortedList: function sortedList() {
+      var sortByName = function sortByName(d1, d2) {
+        return d1.name.toLowerCase() > d2.name.toLowerCase() ? 1 : -1;
+      };
+
+      var sortByDate = function sortByDate(d1, d2) {
+        return d1.date > d2.date ? 1 : -1;
+      };
+
+      switch (this.sortParam) {
+        case 'name':
+          return this.persons.sort(sortByName);
+
+        case 'date':
+          return this.persons.sort(sortByDate);
+
+        default:
+          return this.persons;
+      }
+    }
   },
   components: {
     appModalEdit: _ModalEdit_vue__WEBPACK_IMPORTED_MODULE_1__["default"],
@@ -1855,6 +1906,13 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
 
 /* harmony default export */ __webpack_exports__["default"] = ({
   data: function data() {
@@ -1862,7 +1920,7 @@ __webpack_require__.r(__webpack_exports__);
       persName: '',
       persDate: '',
       errored: false,
-      loading: true
+      errors: []
     };
   },
   methods: {
@@ -1872,19 +1930,21 @@ __webpack_require__.r(__webpack_exports__);
     store: function store() {
       var _this = this;
 
-      axios__WEBPACK_IMPORTED_MODULE_0___default.a.post('/page/store/', {
+      axios__WEBPACK_IMPORTED_MODULE_0___default.a.post('/store/', {
         name: this.persName,
         date: this.persDate
       }).then(function (response) {
+        _this.persName = '';
+        _this.persDate = '';
+
         _this.$emit('added');
       })["catch"](function (error) {
-        console.log(error.response.data.errors);
+        _this.errors = error.response.data.errors;
         _this.errored = true;
-      })["finally"](function () {
-        return _this.loading = false;
       });
     }
-  }
+  },
+  props: ['showModalAdd']
 });
 
 /***/ }),
@@ -1922,6 +1982,13 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
 
 /* harmony default export */ __webpack_exports__["default"] = ({
   data: function data() {
@@ -1929,7 +1996,7 @@ __webpack_require__.r(__webpack_exports__);
       newPersName: '',
       newPersDate: '',
       errored: false,
-      loading: true
+      errors: []
     };
   },
   watch: {
@@ -1952,10 +2019,8 @@ __webpack_require__.r(__webpack_exports__);
       }).then(function (response) {
         _this.$emit('edited');
       })["catch"](function (error) {
-        console.log(error);
+        _this.errors = error.response.data.errors;
         _this.errored = true;
-      })["finally"](function () {
-        return _this.loading = false;
       });
     }
   },
@@ -2471,42 +2536,113 @@ var render = function() {
   var _c = _vm._self._c || _h
   return _c(
     "div",
+    {
+      staticClass: "page",
+      class: { page__overlay: _vm.showModalAdd || _vm.showModalEdit }
+    },
     [
       _c("h1", [_vm._v("Список сотрудников")]),
       _vm._v(" "),
-      _c("button", { on: { click: _vm.toggleModalAdd } }, [_vm._v("Добавить")]),
+      _c("button", { staticClass: "btn", on: { click: _vm.toggleModalAdd } }, [
+        _vm._v("Добавить")
+      ]),
       _vm._v(" "),
-      _c(
-        "table",
-        [
-          _vm._m(0),
-          _vm._v(" "),
+      _c("div", { staticClass: "page__sort" }, [
+        _c("p", [
+          _vm._v("Сортировка \n      "),
           _c(
-            "div",
+            "select",
             {
               directives: [
                 {
-                  name: "show",
-                  rawName: "v-show",
-                  value: _vm.loading,
-                  expression: "loading"
+                  name: "model",
+                  rawName: "v-model",
+                  value: _vm.sortParam,
+                  expression: "sortParam"
                 }
               ],
-              staticClass: "loading"
+              on: {
+                change: function($event) {
+                  var $$selectedVal = Array.prototype.filter
+                    .call($event.target.options, function(o) {
+                      return o.selected
+                    })
+                    .map(function(o) {
+                      var val = "_value" in o ? o._value : o.value
+                      return val
+                    })
+                  _vm.sortParam = $event.target.multiple
+                    ? $$selectedVal
+                    : $$selectedVal[0]
+                }
+              }
             },
-            [_vm._v("Загружаю список...")]
-          ),
+            [
+              _c("option", { attrs: { selected: "", value: "name" } }, [
+                _vm._v("Имя")
+              ]),
+              _vm._v(" "),
+              _c("option", { attrs: { value: "date" } }, [_vm._v("Дата")])
+            ]
+          )
+        ])
+      ]),
+      _vm._v(" "),
+      _c(
+        "table",
+        { staticClass: "table" },
+        [
+          _c("tr", [
+            _c("td", [
+              _c(
+                "a",
+                {
+                  on: {
+                    click: function($event) {
+                      _vm.sortParam = "name"
+                    }
+                  }
+                },
+                [_vm._v("Имя")]
+              )
+            ]),
+            _vm._v(" "),
+            _c("td", [
+              _c(
+                "a",
+                {
+                  on: {
+                    click: function($event) {
+                      _vm.sortParam = "date"
+                    }
+                  }
+                },
+                [_vm._v("Дата")]
+              )
+            ]),
+            _vm._v(" "),
+            _c("td", [_vm._v("Действие")])
+          ]),
           _vm._v(" "),
-          _vm._l(_vm.persons, function(person, index) {
+          _vm.loading
+            ? _c("div", { staticClass: "page__loading" }, [
+                _vm._v("Загружаю список...")
+              ])
+            : _vm._e(),
+          _vm._v(" "),
+          _vm._l(_vm.sortedList, function(person, index) {
             return _c("tr", [
               _c("td", [_vm._v(_vm._s(person.name))]),
               _vm._v(" "),
-              _c("td", [_vm._v(_vm._s(person.date))]),
+              _c("td", [
+                _vm._v(_vm._s(_vm._f("dateFormat")(person.date, "DD.MM.YYYY")))
+              ]),
               _vm._v(" "),
               _c("td", [
                 _c(
                   "button",
                   {
+                    staticClass: "btn btn--edit",
                     on: {
                       click: function($event) {
                         return _vm.edit(person.id, person.name, person.date)
@@ -2519,6 +2655,7 @@ var render = function() {
                 _c(
                   "button",
                   {
+                    staticClass: "btn btn--del",
                     on: {
                       click: function($event) {
                         return _vm.del(person.id)
@@ -2534,8 +2671,28 @@ var render = function() {
         2
       ),
       _vm._v(" "),
+      _c(
+        "div",
+        {
+          directives: [
+            {
+              name: "show",
+              rawName: "v-show",
+              value: _vm.showInfo,
+              expression: "showInfo"
+            }
+          ],
+          staticClass: "page__info"
+        },
+        [
+          _c("p", { staticClass: "page__message" }, [
+            _vm._v(_vm._s(_vm.message))
+          ])
+        ]
+      ),
+      _vm._v(" "),
       _c("app-modal-add", {
-        class: { active: _vm.showModalAdd },
+        attrs: { showModalAdd: _vm.showModalAdd },
         on: { added: _vm.added, closed: _vm.toggleModalAdd }
       }),
       _vm._v(" "),
@@ -2552,20 +2709,7 @@ var render = function() {
     1
   )
 }
-var staticRenderFns = [
-  function() {
-    var _vm = this
-    var _h = _vm.$createElement
-    var _c = _vm._self._c || _h
-    return _c("tr", [
-      _c("td", [_vm._v("Имя")]),
-      _vm._v(" "),
-      _c("td", [_vm._v("Дата")]),
-      _vm._v(" "),
-      _c("td", [_vm._v("Действие")])
-    ])
-  }
-]
+var staticRenderFns = []
 render._withStripped = true
 
 
@@ -2587,80 +2731,106 @@ var render = function() {
   var _vm = this
   var _h = _vm.$createElement
   var _c = _vm._self._c || _h
-  return _c("div", { staticClass: "modal" }, [
-    _c("h2", [_vm._v("Добавить сотрудника")]),
-    _vm._v(" "),
-    _c(
-      "form",
-      {
-        on: {
-          submit: function($event) {
-            $event.preventDefault()
-            return _vm.store($event)
+  return _c(
+    "div",
+    { staticClass: "modal", class: { active: _vm.showModalAdd } },
+    [
+      _c("button", { staticClass: "modal__close", on: { click: _vm.close } }, [
+        _vm._v("×")
+      ]),
+      _vm._v(" "),
+      _c("h2", [_vm._v("Добавить сотрудника")]),
+      _vm._v(" "),
+      _c(
+        "form",
+        {
+          on: {
+            submit: function($event) {
+              $event.preventDefault()
+              return _vm.store($event)
+            }
           }
-        }
-      },
-      [
-        _c("label", [
-          _vm._v("\n        Имя\n        "),
-          _c("input", {
-            directives: [
-              {
-                name: "model",
-                rawName: "v-model",
-                value: _vm.persName,
-                expression: "persName"
-              }
-            ],
-            staticClass: "name",
-            attrs: { type: "text", name: "name", required: "" },
-            domProps: { value: _vm.persName },
-            on: {
-              input: function($event) {
-                if ($event.target.composing) {
-                  return
+        },
+        [
+          _c("div", { staticClass: "modal__element" }, [
+            _c(
+              "label",
+              { staticClass: "modal__label", attrs: { for: "name" } },
+              [_vm._v("Имя")]
+            ),
+            _vm._v(" "),
+            _c("input", {
+              directives: [
+                {
+                  name: "model",
+                  rawName: "v-model",
+                  value: _vm.persName,
+                  expression: "persName"
                 }
-                _vm.persName = $event.target.value
-              }
-            }
-          })
-        ]),
-        _vm._v(" "),
-        _c("label", [
-          _vm._v("\n        Дата\n        "),
-          _c("input", {
-            directives: [
-              {
-                name: "model",
-                rawName: "v-model",
-                value: _vm.persDate,
-                expression: "persDate"
-              }
-            ],
-            staticClass: "date",
-            attrs: { type: "date", name: "date" },
-            domProps: { value: _vm.persDate },
-            on: {
-              input: function($event) {
-                if ($event.target.composing) {
-                  return
+              ],
+              staticClass: "modal__name",
+              attrs: { type: "text", name: "name", required: "" },
+              domProps: { value: _vm.persName },
+              on: {
+                input: function($event) {
+                  if ($event.target.composing) {
+                    return
+                  }
+                  _vm.persName = $event.target.value
                 }
-                _vm.persDate = $event.target.value
               }
-            }
-          })
-        ]),
-        _vm._v(" "),
-        _c("button", { staticClass: "submit", attrs: { type: "submit" } }, [
-          _vm._v("+")
-        ])
-      ]
-    ),
-    _vm._v(" "),
-    _c("button", { staticClass: "close", on: { click: _vm.close } }, [
-      _vm._v("x")
-    ])
-  ])
+            })
+          ]),
+          _vm._v(" "),
+          _c("div", { staticClass: "modal__element" }, [
+            _c(
+              "label",
+              { staticClass: "modal__label", attrs: { for: "date" } },
+              [_vm._v("Дата")]
+            ),
+            _vm._v(" "),
+            _c("input", {
+              directives: [
+                {
+                  name: "model",
+                  rawName: "v-model",
+                  value: _vm.persDate,
+                  expression: "persDate"
+                }
+              ],
+              staticClass: "modal__date",
+              attrs: { type: "date", name: "date", required: "" },
+              domProps: { value: _vm.persDate },
+              on: {
+                input: function($event) {
+                  if ($event.target.composing) {
+                    return
+                  }
+                  _vm.persDate = $event.target.value
+                }
+              }
+            })
+          ]),
+          _vm._v(" "),
+          _c("button", { staticClass: "btn", attrs: { type: "submit" } }, [
+            _vm._v("Добавить")
+          ])
+        ]
+      ),
+      _vm._v(" "),
+      _vm.errored
+        ? _c("div", { staticClass: "modal__error" }, [
+            _c(
+              "ul",
+              _vm._l(_vm.errors, function(error, index) {
+                return _c("li", [_vm._v(_vm._s(error))])
+              }),
+              0
+            )
+          ])
+        : _vm._e()
+    ]
+  )
 }
 var staticRenderFns = []
 render._withStripped = true
@@ -2688,7 +2858,11 @@ var render = function() {
     "div",
     { staticClass: "modal", class: { active: this.showModalEdit } },
     [
-      _c("h2", [_vm._v("Добавить сотрудника")]),
+      _c("button", { staticClass: "modal__close", on: { click: _vm.close } }, [
+        _vm._v("×")
+      ]),
+      _vm._v(" "),
+      _c("h2", [_vm._v("Редактировать сотрудника")]),
       _vm._v(" "),
       _c(
         "form",
@@ -2701,8 +2875,13 @@ var render = function() {
           }
         },
         [
-          _c("label", [
-            _vm._v("\n        Имя\n        "),
+          _c("div", { staticClass: "modal__element" }, [
+            _c(
+              "label",
+              { staticClass: "modal__label", attrs: { for: "name" } },
+              [_vm._v("Имя")]
+            ),
+            _vm._v(" "),
             _c("input", {
               directives: [
                 {
@@ -2712,7 +2891,7 @@ var render = function() {
                   expression: "newPersName"
                 }
               ],
-              staticClass: "name",
+              staticClass: "modal__name",
               attrs: { type: "text", name: "name", required: "" },
               domProps: { value: _vm.newPersName },
               on: {
@@ -2726,8 +2905,13 @@ var render = function() {
             })
           ]),
           _vm._v(" "),
-          _c("label", [
-            _vm._v("\n        Дата\n        "),
+          _c("div", { staticClass: "modal__element" }, [
+            _c(
+              "label",
+              { staticClass: "modal__label", attrs: { for: "date" } },
+              [_vm._v("Дата")]
+            ),
+            _vm._v(" "),
             _c("input", {
               directives: [
                 {
@@ -2737,7 +2921,7 @@ var render = function() {
                   expression: "newPersDate"
                 }
               ],
-              staticClass: "date",
+              staticClass: "modal__date",
               attrs: { type: "date", name: "date", required: "" },
               domProps: { value: _vm.newPersDate },
               on: {
@@ -2751,15 +2935,23 @@ var render = function() {
             })
           ]),
           _vm._v(" "),
-          _c("button", { staticClass: "submit", attrs: { type: "submit" } }, [
+          _c("button", { staticClass: "btn", attrs: { type: "submit" } }, [
             _vm._v("+")
           ])
         ]
       ),
       _vm._v(" "),
-      _c("button", { staticClass: "close", on: { click: _vm.close } }, [
-        _vm._v("x")
-      ])
+      _vm.errored
+        ? _c("div", { staticClass: "modal__error" }, [
+            _c(
+              "ul",
+              _vm._l(_vm.errors, function(error, index) {
+                return _c("li", [_vm._v(_vm._s(error))])
+              }),
+              0
+            )
+          ])
+        : _vm._e()
     ]
   )
 }
@@ -15059,15 +15251,14 @@ __webpack_require__.r(__webpack_exports__);
 /*!***********************************************!*\
   !*** ./resources/js/components/ModalEdit.vue ***!
   \***********************************************/
-/*! no static exports found */
+/*! exports provided: default */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _ModalEdit_vue_vue_type_template_id_8a293608___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./ModalEdit.vue?vue&type=template&id=8a293608& */ "./resources/js/components/ModalEdit.vue?vue&type=template&id=8a293608&");
 /* harmony import */ var _ModalEdit_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./ModalEdit.vue?vue&type=script&lang=js& */ "./resources/js/components/ModalEdit.vue?vue&type=script&lang=js&");
-/* harmony reexport (unknown) */ for(var __WEBPACK_IMPORT_KEY__ in _ModalEdit_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_1__) if(__WEBPACK_IMPORT_KEY__ !== 'default') (function(key) { __webpack_require__.d(__webpack_exports__, key, function() { return _ModalEdit_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_1__[key]; }) }(__WEBPACK_IMPORT_KEY__));
-/* harmony import */ var _node_modules_vue_loader_lib_runtime_componentNormalizer_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../../../node_modules/vue-loader/lib/runtime/componentNormalizer.js */ "./node_modules/vue-loader/lib/runtime/componentNormalizer.js");
+/* empty/unused harmony star reexport *//* harmony import */ var _node_modules_vue_loader_lib_runtime_componentNormalizer_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../../../node_modules/vue-loader/lib/runtime/componentNormalizer.js */ "./node_modules/vue-loader/lib/runtime/componentNormalizer.js");
 
 
 
@@ -15097,7 +15288,7 @@ component.options.__file = "resources/js/components/ModalEdit.vue"
 /*!************************************************************************!*\
   !*** ./resources/js/components/ModalEdit.vue?vue&type=script&lang=js& ***!
   \************************************************************************/
-/*! no static exports found */
+/*! exports provided: default */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";

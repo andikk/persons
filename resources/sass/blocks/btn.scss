@@ -1,0 +1,44 @@
+.btn {
+  background-color: $primary-color;
+  padding-left: 8px;
+  padding-right: 8px;
+  padding-top: 4px;
+  padding-bottom: 4px;
+  color: #fff;
+  font-family: $font-open;
+  text-align: center;
+  border: none;
+  border-radius: 3px;
+  transition: all 0.5s;
+  text-transform: uppercase;
+
+  &:hover {
+    background-color: $primary-hover-color;
+  }
+
+  &:active {
+    background-color: $primary-active-color;
+  }
+
+  &:focus {
+    background-color: $primary-focus-color;
+  }
+
+  &--edit, &--del {
+    text-transform: lowercase;
+  }
+
+  &--del {
+    background-color: $danger-color;
+
+    &:hover {
+      background-color: $danger-hover-color;
+    }
+
+    &:active {
+      background-color: $danger-active-color;
+    }
+
+  }
+
+}

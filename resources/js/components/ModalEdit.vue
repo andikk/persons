@@ -1,22 +1,29 @@
 <template>
   <div class="modal" v-bind:class="{active: this.showModalEdit}">
-    <h2>Добавить сотрудника</h2>
+    <button class="modal__close" @click="close">&times;</button>
+
+    <h2>Редактировать сотрудника</h2>
    
     <form v-on:submit.prevent="edit">
-      <label>
-          Имя
-          <input class="name" type="text" name="name" v-model="newPersName" required>
-      </label>
-      <label>
-          Дата
-          <input class="date" type="date" name="date" v-model="newPersDate" required>
-      </label>
+      <div class="modal__element">
+        <label class="modal__label" for="name">Имя</label>
+        <input class="modal__name" type="text" name="name" v-model="newPersName" required>  
+      </div>
       
-      <button class="submit" type="submit">+</button>
+      <div class="modal__element">
+        <label class="modal__label" for="date">Дата</label>    
+        <input class="modal__date" type="date" name="date" v-model="newPersDate" required>  
+      </div>
       
+      <button class="btn" type="submit">+</button>   
     </form>
 
-    <button class="close" @click="close">x</button>
+    <div class="modal__error" v-if="errored">
+      <ul>
+        <li v-for="(error, index) in errors">{{ error }}</li>
+      </ul> 
+    </div>
+
   </div>  
 </template>
 
@@ -28,7 +35,7 @@
         newPersName: '',
         newPersDate: '',
         errored: false,
-        loading: true
+        errors: [] 
       };
     },
     watch: {
@@ -48,10 +55,9 @@
             this.$emit('edited');           
           })
           .catch(error => {
-            console.log(error);
+            this.errors = error.response.data.errors; 
             this.errored = true;
-          })
-          .finally(() => (this.loading = false));      
+          });      
       }
     },
     props: ['showModalEdit', 'persIdEdit', 'persNameEdit', 'persDateEdit']

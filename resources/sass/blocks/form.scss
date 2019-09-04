@@ -1,0 +1,21 @@
+.form {
+
+  &__label {
+    display: block;
+    text-align: left;
+    margin-bottom: 4px;
+  }
+
+  &__element {
+    margin-bottom: 20px;
+  }
+
+  &__name, &__date {
+    width: 100%;
+  }
+
+  &__error {
+    color: $danger-color;
+  }
+
+}

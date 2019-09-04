@@ -1,33 +1,33 @@
 <template>
-  <div class="modal" v-bind:class="{active: this.showModalEdit}">
-    <button class="modal__close" @click="close">&times;</button>
+  <app-modal :showModal= "showModal" @close="close">
 
     <h2>Редактировать сотрудника</h2>
    
-    <form v-on:submit.prevent="edit">
-      <div class="modal__element">
-        <label class="modal__label" for="name">Имя</label>
-        <input class="modal__name" type="text" name="name" v-model="newPersName" required>  
+    <form class="form" v-on:submit.prevent="edit">
+      <div class="form__element">
+        <label class="form__label" for="name">Имя</label>
+        <input class="form__name" type="text" name="name" v-model="newPersName" required>  
       </div>
       
-      <div class="modal__element">
-        <label class="modal__label" for="date">Дата</label>    
-        <input class="modal__date" type="date" name="date" v-model="newPersDate" required>  
+      <div class="form__element">
+        <label class="form__label" for="date">Дата</label>    
+        <input class="form__date" type="date" name="date" v-model="newPersDate" required>  
       </div>
       
       <button class="btn" type="submit">Сохранить</button>   
     </form>
 
-    <div class="modal__error" v-if="errored">
+    <div class="form__error" v-if="errored">
       <ul>
         <li v-for="(error, index) in errors">{{ error }}</li>
       </ul> 
     </div>
 
-  </div>  
+  </app-modal> 
 </template>
 
 <script>
+  import Modal from './Modal.vue';
   import axios from 'axios';
   export default {
     data() {
@@ -39,14 +39,14 @@
       };
     },
     watch: {
-      showModalEdit: function () {
+      showModal: function () {
         this.newPersName = this.persNameEdit;
         this.newPersDate = this.persDateEdit;   
       },
     },
     methods: {
       close() {
-        this.$emit('closed');
+        this.$emit('close');
       },
       edit() {
         axios
@@ -60,6 +60,9 @@
           });      
       }
     },
-    props: ['showModalEdit', 'persIdEdit', 'persNameEdit', 'persDateEdit']
+    components: {
+      appModal: Modal
+    },
+    props: ['showModal', 'persIdEdit', 'persNameEdit', 'persDateEdit']
   }  
 </script>

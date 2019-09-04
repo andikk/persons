@@ -1,7 +1,7 @@
 <template>
   <div class="page" v-bind:class="{page__overlay: showModalAdd||showModalEdit}">
     <h1>Список сотрудников</h1>
-    <button class="btn" @click="toggleModalAdd">Добавить</button>
+    <button class="btn" @click="showModalAdd = true">Добавить</button>
     
     <div class="page__sort">
       <p>Сортировка 
@@ -37,20 +37,20 @@
       <p class="page__message">{{ message }}</p>
     </div>
 
-    <app-modal-add  
-      :showModalAdd = "showModalAdd"
-      @added="added" 
-      @closed="toggleModalAdd">
-    </app-modal-add>
+    <app-add 
+      :showModal = "showModalAdd" 
+      @close="showModalAdd = false"
+      @added="added">
+    </app-add>
 
-    <app-modal-edit
-      :showModalEdit = "showModalEdit" 
+    <app-edit
+      :showModal = "showModalEdit" 
       :persIdEdit="persIdEdit"
       :persNameEdit="persNameEdit"
       :persDateEdit="persDateEdit"
       @edited="edited" 
-      @closed="toggleModalEdit">
-    </app-modal-edit>
+      @close="showModalEdit = false">
+    </app-edit>
 
   </div>
  
@@ -59,8 +59,8 @@
 <script>
 
   import axios from 'axios';
-  import ModalEdit from './ModalEdit.vue';
-  import ModalAdd from './ModalAdd.vue';
+  import Add from './Add.vue';
+  import Edit from './Edit.vue';
   
   export default {
     data() {
@@ -99,23 +99,15 @@
         setTimeout(() => this.showInfo = false, 3000);
       },
       
-      toggleModalAdd() {
-        this.showModalAdd=!this.showModalAdd;
-      },
-
-      toggleModalEdit() {
-        this.showModalEdit=!this.showModalEdit;
-      },
-
       added() {
         this.loadList();
-        this.toggleModalAdd();
+        this.showModalAdd = false;
         this.showMessage('Добавлено');
       },
 
       edited() {
         this.loadList();
-        this.toggleModalEdit();
+        this.showModalEdit = false;
         this.showMessage('Изменения внесены');
       },
 
@@ -123,7 +115,7 @@
         this.persIdEdit = persId;
         this.persNameEdit = persName;
         this.persDateEdit = persDate;
-        this.toggleModalEdit();
+        this.showModalEdit = true;
       },
 
       del(persId) {
@@ -160,9 +152,62 @@
     },
 
     components: {
-      appModalEdit: ModalEdit,
-      appModalAdd: ModalAdd
+      appEdit: Edit,
+      appAdd: Add
     }
   }
   
 </script>
+
+<style>
+  .page {
+    padding-left: 15px;
+    padding-right: 15px;
+  }
+
+  .page__overlay {
+    overflow-y: hidden;
+  }  
+  
+  .page__overlay::before {
+    position: absolute;
+    content: '';
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    display: block;
+    z-index: 1;
+    background-color: rgba(0, 0, 0, 0.7);
+  }
+  
+  .page__info {
+    position: fixed;
+    top: 40px;
+    left: 50%;
+    transform: translateX(-50%);
+    border-radius: 4px;
+    border: 1px solid #af9f9f;
+    background-color: #f1f1f1;
+    padding: 30px;
+  }
+
+  .page__message {
+    color: #42b983;
+  }
+
+  .page__sort {
+    margin-bottom: 16px;
+  }
+  
+  .page__sort select {
+    min-width: 100px; 
+  }
+
+  .table td {
+    padding-right: 30px;
+    padding-bottom: 8px;
+  }
+  
+  
+</style>

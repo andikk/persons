@@ -42,6 +42,10 @@
       background-color: $danger-active-color;
     }
 
+    &:focus {
+      background-color: $danger-focus-color;
+    }
+
   }
 
 }

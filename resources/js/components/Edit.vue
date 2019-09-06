@@ -56,6 +56,7 @@
       showModal: function () {
         this.newPersName = this.persNameEdit;
         this.newPersDate = this.persDateEdit;   
+        this.errored = false;
       },
     },
     methods: {

@@ -1752,6 +1752,13 @@ __webpack_require__.r(__webpack_exports__);
       errors: []
     };
   },
+  watch: {
+    showModal: function showModal() {
+      this.persName = '';
+      this.persDate = '';
+      this.errored = false;
+    }
+  },
   methods: {
     store: function store() {
       var _this = this;
@@ -2029,6 +2036,7 @@ __webpack_require__.r(__webpack_exports__);
     showModal: function showModal() {
       this.newPersName = this.persNameEdit;
       this.newPersDate = this.persDateEdit;
+      this.errored = false;
     }
   },
   methods: {

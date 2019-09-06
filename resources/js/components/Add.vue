@@ -19,7 +19,7 @@
         <label class="form__label" for="date">Дата</label>    
       
         <ValidationProvider name="date" :rules="{ required: true, regex: /^\d{4} \d{6}$/ }">
-          <div slot-scope="{ errors }">
+          <div slot-scope="{ errors }"> 
             <input class="form__date" type="date" name="date" v-model="persDate" required>
             <p>{{ errors[0] }}</p>
           </div>
@@ -50,6 +50,13 @@
         errored: false,
         errors: []     
       };
+    },
+    watch: {
+      showModal: function () {
+        this.persName = '';
+        this.persDate = '';   
+        this.errored = false;
+      },
     },
     methods: {
       store() {

@@ -1741,6 +1741,7 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
 
 
 /* harmony default export */ __webpack_exports__["default"] = ({
@@ -6019,7 +6020,7 @@ var render = function() {
               _c("ValidationProvider", {
                 attrs: {
                   name: "date",
-                  rules: { required: true, regex: /^\d{2}\.d{2}\.d{4}$/ }
+                  rules: { required: true, regex: /(?<!\d)(?!0000)\d{4}(?!\d)/ }
                 },
                 scopedSlots: _vm._u([
                   {
@@ -6402,7 +6403,7 @@ var render = function() {
               _c("ValidationProvider", {
                 attrs: {
                   name: "date",
-                  rules: { required: true, regex: /^\d{2}\.d{2}\.d{4}$/ }
+                  rules: { required: true, regex: /(?<!\d)(?!0000)\d{4}(?!\d)/ }
                 },
                 scopedSlots: _vm._u([
                   {
@@ -18647,6 +18648,7 @@ Object(vee_validate__WEBPACK_IMPORTED_MODULE_1__["extend"])('required', _objectS
 Object(vee_validate__WEBPACK_IMPORTED_MODULE_1__["extend"])('regex', _objectSpread({}, vee_validate_dist_rules__WEBPACK_IMPORTED_MODULE_2__["regex"], {
   message: 'Дата должна быть в формате ДД.ММ.ГГГГ'
 }));
+ //import { ValidationProvider } from 'vee-validate/dist/vee-validate.full';
 
 Vue.component('ValidationProvider', vee_validate__WEBPACK_IMPORTED_MODULE_1__["ValidationProvider"]);
 

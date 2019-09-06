@@ -29,6 +29,7 @@ extend('regex', {
 });
 
 import { ValidationProvider } from 'vee-validate';
+//import { ValidationProvider } from 'vee-validate/dist/vee-validate.full';
 Vue.component('ValidationProvider', ValidationProvider);
 
 

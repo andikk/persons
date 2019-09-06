@@ -1743,7 +1743,7 @@ __webpack_require__.r(__webpack_exports__);
     store: function store() {
       var _this = this;
 
-      axios__WEBPACK_IMPORTED_MODULE_1___default.a.post('/store/', {
+      axios__WEBPACK_IMPORTED_MODULE_1___default.a.post('/api/store/', {
         name: this.persName,
         date: this.persDate
       }).then(function (response) {
@@ -1862,8 +1862,8 @@ __webpack_require__.r(__webpack_exports__);
     loadList: function loadList() {
       var _this = this;
 
-      axios__WEBPACK_IMPORTED_MODULE_0___default.a.get('/list/').then(function (response) {
-        _this.persons = response.data.persons;
+      axios__WEBPACK_IMPORTED_MODULE_0___default.a.get('/api/list/').then(function (response) {
+        _this.persons = response.data.data;
       })["catch"](function (error) {
         _this.showMessage("Ошибка при загрузки перечня сотрудников");
 
@@ -1901,7 +1901,7 @@ __webpack_require__.r(__webpack_exports__);
     del: function del(persId) {
       var _this3 = this;
 
-      var url = '/delete/' + persId;
+      var url = '/api/delete/' + persId;
       axios__WEBPACK_IMPORTED_MODULE_0___default.a.post(url).then(function (response) {
         _this3.loadList();
 
@@ -2011,7 +2011,7 @@ __webpack_require__.r(__webpack_exports__);
     edit: function edit() {
       var _this = this;
 
-      axios__WEBPACK_IMPORTED_MODULE_1___default.a.post('/update', {
+      axios__WEBPACK_IMPORTED_MODULE_1___default.a.post('/api/update', {
         id: this.persIdEdit,
         name: this.newPersName,
         date: this.newPersDate

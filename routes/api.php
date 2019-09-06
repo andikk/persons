@@ -17,3 +17,8 @@ use Illuminate\Http\Request;
 //   return $request->user();
 // });
 
+Route::get('/list', 'PersonController@list');
+Route::post('/store', 'PersonController@store');
+Route::post('/delete/{id}', 'PersonController@delete');
+Route::post('/update', 'PersonController@update');
+

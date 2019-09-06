@@ -50,7 +50,7 @@
       },
       edit() {
         axios
-          .post('/update',{id: this.persIdEdit, name: this.newPersName, date: this.newPersDate })
+          .post('/api/update',{id: this.persIdEdit, name: this.newPersName, date: this.newPersDate })
           .then(response => {
             this.$emit('edited');           
           })

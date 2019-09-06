@@ -41,7 +41,7 @@
     methods: {
       store() {
         axios
-          .post('/store/',{name: this.persName, date: this.persDate })
+          .post('/api/store/',{name: this.persName, date: this.persDate })
           .then(response => {
             this.persName = '';
             this.persDate = '';

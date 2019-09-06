@@ -81,9 +81,9 @@
     methods: {
       loadList() {
         axios
-        .get('/list/')
+        .get('/api/list/')
         .then(response => {
-          this.persons = response.data.persons; 
+          this.persons = response.data.data
         })
         .catch(error => {
           this.showMessage("Ошибка при загрузки перечня сотрудников");
@@ -119,7 +119,7 @@
       },
 
       del(persId) {
-         const url = '/delete/' + persId;
+         const url = '/api/delete/' + persId;
          axios
           .post(url)
           .then(response => {

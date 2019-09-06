@@ -12,7 +12,3 @@
 */
 
 Route::get('/', 'IndexController@start');
-Route::get('/list', 'IndexController@list');
-Route::post('/store', 'IndexController@store');
-Route::post('/delete/{person}', 'IndexController@delete');
-Route::post('/update', 'IndexController@update');

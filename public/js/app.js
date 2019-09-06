@@ -6019,7 +6019,7 @@ var render = function() {
               _c("ValidationProvider", {
                 attrs: {
                   name: "date",
-                  rules: { required: true, regex: /^\d{4} \d{6}$/ }
+                  rules: { required: true, regex: /^\d{2}\.d{2}\.d{4}$/ }
                 },
                 scopedSlots: _vm._u([
                   {
@@ -6402,7 +6402,7 @@ var render = function() {
               _c("ValidationProvider", {
                 attrs: {
                   name: "date",
-                  rules: { required: true, regex: /^\d{4} \d{6}$/ }
+                  rules: { required: true, regex: /^\d{2}\.d{2}\.d{4}$/ }
                 },
                 scopedSlots: _vm._u([
                   {

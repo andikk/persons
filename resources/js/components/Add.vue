@@ -18,7 +18,7 @@
       <div class="form__element">
         <label class="form__label" for="date">Дата</label>    
       
-        <ValidationProvider name="date" :rules="{ required: true, regex: /^\d{4} \d{6}$/ }">
+        <ValidationProvider name="date" :rules="{ required: true, regex: /^\d{2}\.d{2}\.d{4}$/ }">
           <div slot-scope="{ errors }"> 
             <input class="form__date" type="date" name="date" v-model="persDate" required>
             <p>{{ errors[0] }}</p>

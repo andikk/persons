@@ -7,9 +7,30 @@
 //require('./bootstrap');
 
 window.Vue = require('vue');
+// компонент для отображения даты в определенном формате
 import VueFilterDateFormat from 'vue-filter-date-format';
-
 window.Vue.use(VueFilterDateFormat);
+
+
+//компонент для валидации форм
+import { extend } from 'vee-validate';
+import { required } from 'vee-validate/dist/rules';
+import { regex } from 'vee-validate/dist/rules';
+
+//правила валидации
+extend('required', {
+  ...required,
+  message: 'Данное поле обязательно к заполнению'
+});
+
+extend('regex', {
+  ...regex,
+  message: 'Дата должна быть в формате ДД.ММ.ГГГГ'
+});
+
+import { ValidationProvider } from 'vee-validate';
+Vue.component('ValidationProvider', ValidationProvider);
+
 
 import App from "./components/App";
 

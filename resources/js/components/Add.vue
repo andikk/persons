@@ -5,12 +5,25 @@
     <form class="form" v-on:submit.prevent="store">
       <div class="form__element">
         <label class="form__label" for="name">Имя</label>
-        <input class="form__name" type="text" name="name" v-model="persName" required>  
+        
+        <ValidationProvider name="name" rules="required">
+          <div slot-scope="{ errors }">
+            <input class="form__name" type="text" name="name" v-model="persName" required>
+            <p>{{ errors[0] }}</p>
+          </div>
+        </ValidationProvider>  
+      
       </div>
       
       <div class="form__element">
         <label class="form__label" for="date">Дата</label>    
-        <input class="form__date" type="date" name="date" v-model="persDate" required>  
+      
+        <ValidationProvider name="date" :rules="{ required: true, regex: /^\d{4} \d{6}$/ }">
+          <div slot-scope="{ errors }">
+            <input class="form__date" type="date" name="date" v-model="persDate" required>
+            <p>{{ errors[0] }}</p>
+          </div>
+        </ValidationProvider>  
       </div>
             
       <button class="btn" type="submit">Добавить</button>     

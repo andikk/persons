@@ -6,12 +6,26 @@
     <form class="form" v-on:submit.prevent="edit">
       <div class="form__element">
         <label class="form__label" for="name">Имя</label>
-        <input class="form__name" type="text" name="name" v-model="newPersName" required>  
+
+        <ValidationProvider name="name" rules="required">
+          <div slot-scope="{ errors }">
+            <input class="form__name" type="text" name="name" v-model="newPersName" required>
+            <p>{{ errors[0] }}</p>
+          </div>
+        </ValidationProvider>  
+
       </div>
       
       <div class="form__element">
         <label class="form__label" for="date">Дата</label>    
-        <input class="form__date" type="date" name="date" v-model="newPersDate" required>  
+
+        <ValidationProvider name="date" :rules="{ required: true, regex: /^\d{4} \d{6}$/ }">
+          <div slot-scope="{ errors }">
+            <input class="form__date" type="date" name="date" v-model="newPersDate" required>
+            <p>{{ errors[0] }}</p>
+          </div>
+        </ValidationProvider> 
+
       </div>
       
       <button class="btn" type="submit">Сохранить</button>   
